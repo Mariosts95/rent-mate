@@ -23,10 +23,57 @@ const MainTable = ({ rows, add, remove }) => {
       field: 'value',
       headerName: 'Value',
       type: 'number',
-      width: 80,
+      width: 100,
       align: 'left',
       headerAlign: 'left',
+      valueFormatter: (params) =>
+        `${Intl.NumberFormat('el-GR', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(params.value)}`,
     },
+    {
+      field: 'factor',
+      headerName: 'Factor',
+      type: 'number',
+      width: 100,
+      align: 'left',
+      headerAlign: 'left',
+      valueFormatter: (params) => `${params.value.toLocaleString()}%`,
+    },
+    {
+      field: 'min',
+      headerName: 'Minimum',
+      type: 'number',
+      width: 100,
+      align: 'left',
+      headerAlign: 'left',
+      valueFormatter: (params) => {
+        if (params.value === 0) return '-';
+
+        return `${Intl.NumberFormat('el-GR', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(params.value)}`;
+      },
+    },
+    {
+      field: 'max',
+      headerName: 'Maximum',
+      type: 'number',
+      width: 100,
+      align: 'left',
+      headerAlign: 'left',
+      valueFormatter: (params) => {
+        if (params.value === 0) return '-';
+
+        return `${Intl.NumberFormat('el-GR', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(params.value)}`;
+      },
+    },
+
     {
       field: 'actions',
       type: 'actions',

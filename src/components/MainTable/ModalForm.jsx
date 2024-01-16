@@ -24,15 +24,23 @@ const ModalForm = ({ title, buttonText, handleSubmit }) => {
   const handleClose = () => setOpen(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    handleSubmit(formData);
+    handleSubmit({
+      ...formData,
+      ...(formData.factor > 0
+        ? {
+            min: +formData.value - +formData.value * (+formData.factor / 100),
+            max: +formData.value + +formData.value * (+formData.factor / 100),
+          }
+        : { min: 0, max: 0 }),
+    });
   };
 
   return (
@@ -85,8 +93,22 @@ const ModalForm = ({ title, buttonText, handleSubmit }) => {
 
               <Grid item xs={12}>
                 <Autocomplete
+                  fullWidth
+                  autoHighlight
                   name='factor'
                   options={['5', '10', '15', '20']}
+                  onChange={(_, value) => {
+                    // Since I cannot get the value from the event, I mock the event with the values I need
+                    // TODO: Refactor this logic
+                    const e = {
+                      target: {
+                        name: 'factor',
+                        value: +value,
+                      },
+                    };
+
+                    handleChange(e);
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
