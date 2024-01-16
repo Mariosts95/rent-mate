@@ -27,3 +27,15 @@ export const sumArray = (arr) => {
 
   return sum;
 };
+
+/**
+ * Calculates the different sums of the incomes/expenses.
+ *
+ * @param {number[]} items - The array of incomes/expenses.
+ * @returns {object} The min/max/total sum of incomes/expenses.
+ */
+export const calculateSums = (items) => ({
+  min: sumArray(items.map((x) => x.min || x.value)),
+  max: sumArray(items.map((x) => x.max || x.value)),
+  total: sumArray(items.map((x) => x.value)),
+});

@@ -1,127 +1,118 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Box, Chip, Typography } from '@mui/material';
+// If I import Box as default it throws this error
+// Uncaught TypeError: createTheme_default is not a function
+import { Box, Typography } from '@mui/material';
 
 import Expenses from './components/Expenses';
 import Incomes from './components/Incomes';
 import PageWrapper from './components/PageWrapper';
+import TotalChip from './components/TotalChip/TotalChip';
 
-import { sumArray } from './utils/general';
+import { calculateSums } from './utils/general';
 
 const App = () => {
   const incomes = useSelector((state) => state.incomes);
-
   const expenses = useSelector((state) => state.expenses);
 
-  const incomesValues = incomes.map((x) => x.value);
-  const expensesValues = expenses.map((x) => x.value);
+  const incomesSums = useMemo(() => calculateSums(incomes), [incomes]);
+  const expensesSums = useMemo(() => calculateSums(expenses), [expenses]);
 
-  const incomesMinValues = incomes.map((x) => x.min || x.value);
-  const expensesMinValues = expenses.map((x) => x.min || x.value);
-
-  const incomesMaxValues = incomes.map((x) => x.max || x.value);
-  const expensesMaxValues = expenses.map((x) => x.max || x.value);
-
-  const summary = sumArray(incomesValues) - sumArray(expensesValues);
-  const minSummary = sumArray(incomesMinValues) - sumArray(expensesMinValues);
-  const maxSummary = sumArray(incomesMaxValues) - sumArray(expensesMaxValues);
+  const sums = useMemo(
+    () => ({
+      min: incomesSums.min - expensesSums.min,
+      max: incomesSums.max - expensesSums.max,
+      total: incomesSums.total - expensesSums.total,
+    }),
+    [
+      incomesSums.min,
+      incomesSums.max,
+      incomesSums.total,
+      expensesSums.min,
+      expensesSums.max,
+      expensesSums.total,
+    ],
+  );
 
   return (
     <PageWrapper>
-      <Typography variant='h1' textAlign='center' m={5} color='theme'>
+      <Typography variant='h2' textAlign='center' m={2}>
         Rent Mate
       </Typography>
 
-      <Box my={5}>
-        <Incomes />
-        <Chip
-          label={`Total income: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(incomesValues))}`}
-          color='success'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
-        <Chip
-          label={`Total min income: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(incomesMinValues))}`}
-          color='success'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
-        <Chip
-          label={`Total max income: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(incomesMaxValues))}`}
-          color='success'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
+      <Box my={1} display='flex' gap={2} justifyContent='center'>
+        <Box width='100%'>
+          <Incomes />
+
+          <Box display='flex' justifyContent='center'>
+            <TotalChip
+              labelTitle='Total Min Income'
+              labelValue={incomesSums.min}
+              color='success'
+              variant='outlined'
+              sx={{ fontSize: 14 }}
+            />
+            <TotalChip
+              labelTitle='Total Max Income'
+              labelValue={incomesSums.max}
+              color='success'
+              variant='outlined'
+              sx={{ fontSize: 14 }}
+            />
+            <TotalChip
+              labelTitle='Total Income'
+              labelValue={incomesSums.total}
+              color='success'
+              variant='filled'
+            />
+          </Box>
+        </Box>
+
+        <Box width='100%'>
+          <Expenses />
+
+          <Box display='flex' justifyContent='center'>
+            <TotalChip
+              labelTitle='Total Min Expenses'
+              labelValue={expensesSums.min}
+              color='error'
+              variant='outlined'
+              sx={{ fontSize: 14 }}
+            />
+            <TotalChip
+              labelTitle='Total Max Expenses'
+              labelValue={expensesSums.max}
+              color='error'
+              variant='outlined'
+              sx={{ fontSize: 14 }}
+            />
+            <TotalChip
+              labelTitle='Total Expenses'
+              labelValue={expensesSums.total}
+              color='error'
+              variant='filled'
+            />
+          </Box>
+        </Box>
       </Box>
 
-      <Box my={5}>
-        <Expenses />
-        <Chip
-          label={`Total expenses: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(expensesValues))}`}
-          color='error'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
-        <Chip
-          label={`Total min expenses: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(expensesMinValues))} `}
-          color='error'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
-        <Chip
-          label={`Total expenses: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(sumArray(expensesMaxValues))}`}
-          color='error'
-          variant='outlined'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
-      </Box>
-
-      <Box my={2}>
-        <Chip
-          label={`Min Money Left: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(minSummary)}`}
+      <Box my={2} display='flex' justifyContent='center'>
+        <TotalChip
+          labelTitle='Min Total'
+          labelValue={sums.min}
           color='primary'
-          variant='filled'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
+          variant='outlined'
+          sx={{ fontSize: 14 }}
         />
-        <Chip
-          label={`Money Left: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(summary)}`}
+        <TotalChip
+          labelTitle='Max Total'
+          labelValue={sums.max}
           color='primary'
-          variant='filled'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
+          variant='outlined'
+          sx={{ fontSize: 14 }}
         />
-        <Chip
-          label={`Max Money Left: ${Intl.NumberFormat('el-GR', {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(maxSummary)}`}
-          color='primary'
-          variant='filled'
-          sx={{ mt: 2, mx: 1, fontSize: 24, p: 2, height: 'auto' }}
-        />
+        <TotalChip labelTitle='Total' labelValue={sums.total} color='primary' variant='filled' />
       </Box>
     </PageWrapper>
   );

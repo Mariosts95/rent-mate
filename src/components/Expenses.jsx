@@ -11,9 +11,10 @@ const Expenses = () => {
 
   return (
     <Box>
-      <Typography variant='h3' mb={5} textAlign='center'>
+      <Typography variant='h4' mb={5} textAlign='center'>
         Expenses
       </Typography>
+
       <MainTable rows={expenses} add={add} remove={remove} />
     </Box>
   );
