@@ -11,13 +11,14 @@
     "importOrder": [
         "^react",
         "^\\w",
+        "^@",
         "/hooks/",
         "@mui/",
         "/store/",
         "/pages/",
         "/components/",
         "/assets/",
-        "^./",
+        "^.*/",
         "css$"
     ],
     "importOrderSeparation": true,
