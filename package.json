@@ -18,7 +18,7 @@
     "precommit": "lint-staged",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "lint-staged": {
     "*.{js,jsx}": [
