@@ -1,6 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
+import TotalChip from './TotalChip/TotalChip';
+
 const baseColumnConfig = {
   type: 'number',
   flex: 1,
@@ -41,7 +43,33 @@ const Savings = ({ sums }) => (
       Savings
     </Typography>
 
-    <DataGrid rows={sums} columns={columns} autoHeight disableColumnMenu />
+    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+      <DataGrid rows={sums} columns={columns} autoHeight disableColumnMenu />
+    </Box>
+
+    <Box sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: 'column' }}>
+      <TotalChip
+        labelTitle='Worst Case'
+        labelValue={sums[0]?.worstCase}
+        color='primary'
+        variant='outlined'
+        sx={{ fontSize: 14 }}
+      />
+      <TotalChip
+        labelTitle='Best Case'
+        labelValue={sums[0]?.bestCase}
+        color='primary'
+        variant='outlined'
+        sx={{ fontSize: 14 }}
+      />
+      <TotalChip
+        labelTitle='Standard Case'
+        labelValue={sums[0]?.standardCase}
+        color='primary'
+        variant='filled'
+        sx={{ fontSize: 14 }}
+      />
+    </Box>
   </Box>
 );
 

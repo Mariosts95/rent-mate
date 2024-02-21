@@ -45,11 +45,21 @@ const App = () => {
         Rent Mate
       </Typography>
 
-      <Box my={1} display='flex' gap={2} justifyContent='center'>
+      <Box
+        my={1}
+        display='flex'
+        gap={2}
+        justifyContent='center'
+        sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+      >
         <Box width='100%'>
           <Incomes />
 
-          <Box display='flex' justifyContent='center'>
+          <Box
+            display='flex'
+            justifyContent='center'
+            sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+          >
             <TotalChip
               labelTitle='Total Min Income'
               labelValue={incomesSums.min}
@@ -76,7 +86,11 @@ const App = () => {
         <Box width='100%'>
           <Expenses />
 
-          <Box display='flex' justifyContent='center'>
+          <Box
+            display='flex'
+            justifyContent='center'
+            sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+          >
             <TotalChip
               labelTitle='Total Min Expenses'
               labelValue={expensesSums.min}
