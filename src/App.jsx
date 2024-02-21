@@ -8,9 +8,10 @@ import { Box, Typography } from '@mui/material';
 import Expenses from './components/Expenses';
 import Incomes from './components/Incomes';
 import PageWrapper from './components/PageWrapper';
+import Savings from './components/Savings';
 import TotalChip from './components/TotalChip/TotalChip';
 
-import { calculateSums } from './utils/general';
+import { calculateSums, randomId } from './utils/general';
 
 const App = () => {
   const incomes = useSelector((state) => state.incomes);
@@ -20,11 +21,14 @@ const App = () => {
   const expensesSums = useMemo(() => calculateSums(expenses), [expenses]);
 
   const sums = useMemo(
-    () => ({
-      min: incomesSums.min - expensesSums.min,
-      max: incomesSums.max - expensesSums.max,
-      total: incomesSums.total - expensesSums.total,
-    }),
+    () => [
+      {
+        standardCase: incomesSums.total - expensesSums.total,
+        bestCase: incomesSums.max - expensesSums.min,
+        worstCase: incomesSums.min - expensesSums.max,
+        id: randomId(),
+      },
+    ],
     [
       incomesSums.min,
       incomesSums.max,
@@ -41,11 +45,21 @@ const App = () => {
         Rent Mate
       </Typography>
 
-      <Box my={1} display='flex' gap={2} justifyContent='center'>
+      <Box
+        my={1}
+        display='flex'
+        gap={2}
+        justifyContent='center'
+        sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+      >
         <Box width='100%'>
           <Incomes />
 
-          <Box display='flex' justifyContent='center'>
+          <Box
+            display='flex'
+            justifyContent='center'
+            sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+          >
             <TotalChip
               labelTitle='Total Min Income'
               labelValue={incomesSums.min}
@@ -72,7 +86,11 @@ const App = () => {
         <Box width='100%'>
           <Expenses />
 
-          <Box display='flex' justifyContent='center'>
+          <Box
+            display='flex'
+            justifyContent='center'
+            sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
+          >
             <TotalChip
               labelTitle='Total Min Expenses'
               labelValue={expensesSums.min}
@@ -97,22 +115,26 @@ const App = () => {
         </Box>
       </Box>
 
-      <Box my={2} display='flex' justifyContent='center'>
-        <TotalChip
-          labelTitle='Min Total'
-          labelValue={sums.min}
-          color='primary'
-          variant='outlined'
-          sx={{ fontSize: 14 }}
-        />
-        <TotalChip
-          labelTitle='Max Total'
-          labelValue={sums.max}
-          color='primary'
-          variant='outlined'
-          sx={{ fontSize: 14 }}
-        />
-        <TotalChip labelTitle='Total' labelValue={sums.total} color='primary' variant='filled' />
+      <Box my={2} maxWidth={800} mx='auto'>
+        <Savings sums={sums} />
+
+        {/* <Box display='flex' justifyContent='center'>
+          <TotalChip
+            labelTitle='Min Total'
+            labelValue={sums.min}
+            color='primary'
+            variant='outlined'
+            sx={{ fontSize: 14 }}
+          />
+          <TotalChip
+            labelTitle='Max Total'
+            labelValue={sums.max}
+            color='primary'
+            variant='outlined'
+            sx={{ fontSize: 14 }}
+          />
+          <TotalChip labelTitle='Total' labelValue={sums.total} color='primary' variant='filled' />
+        </Box> */}
       </Box>
     </PageWrapper>
   );

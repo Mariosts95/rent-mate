@@ -107,6 +107,7 @@ const MainTable = ({ rows, add, remove }) => {
       columns={columns}
       editMode='row'
       autoHeight
+      disableColumnMenu
       slots={{
         toolbar: () => (
           <ModalForm
